@@ -1,6 +1,8 @@
 import pygame
 import sys
 from gun import Gun
+from design import Design
+
 
 pygame.init()
 
@@ -10,6 +12,7 @@ WINDOW_HEIGHT = 400
 BACKGROUND = (211, 25, 11)
 
 WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+design = Design(WINDOW_WIDTH, WINDOW_HEIGHT)
 pygame.display.set_caption("Duck Hunt")
 
 clock = pygame.time.Clock()
@@ -52,8 +55,7 @@ def main():
                     elif state == "game":
                         gun.shoot(event.pos)
 
-
-        WINDOW.fill(BACKGROUND)
+        design.draw(WINDOW)
 
         if state == "menu":
 
