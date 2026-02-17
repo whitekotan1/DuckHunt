@@ -2,6 +2,7 @@ import pygame
 import sys
 from gun import Gun
 from design import Design
+from duck import Duck
 
 
 pygame.init()
@@ -19,6 +20,7 @@ clock = pygame.time.Clock()
 
 
 gun = Gun()
+duck =Duck(WINDOW_WIDTH,WINDOW_HEIGHT)
 
 state = "menu"
 
@@ -81,6 +83,9 @@ def main():
             )
 
         elif state == "game":
+            duck.update()  
+            duck.draw(WINDOW)  
+
             gun.update()
             gun.draw(WINDOW)
             gun.draw_ammo(WINDOW)
