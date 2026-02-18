@@ -83,8 +83,9 @@ def main():
             )
 
         elif state == "game":
-            duck.update()  
-            duck.draw(WINDOW)  
+            if duck.alive == True:
+                duck.update()  
+                duck.draw(WINDOW)  
 
             gun.update()
             gun.draw(WINDOW)

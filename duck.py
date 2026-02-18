@@ -28,3 +28,11 @@ class Duck:
 
     def draw(self, screen):
         screen.blit(self.img, (int(self.x), int(self.y)))
+
+
+    def dead(self):
+         self.alive = False
+         return self.alive
+
+
+    
