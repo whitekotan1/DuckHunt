@@ -82,7 +82,11 @@ class GameManager:
                 self.duck.draw(screen)
             self.gun.draw(screen)
             self.gun.draw_ammo(screen)
-            
+            hud = self.font_small.render(
+                f"Round: {self.current_round}/5  Ducks: {self.ducks_killed_in_round}/{self.ducks_in_round()}",
+                True, (255, 255, 255)
+            )
+            screen.blit(hud, (10, 10))
 
         elif self.state == "game_over":
             overlay = pygame.Surface((self.screen_width, self.screen_height))
