@@ -8,21 +8,43 @@ class GameManager:
         self.screen_width = screen_width
         self.screen_height = screen_height
 
+        self.round_config = {
+            1: 1,
+            2: 2,
+            3: 2,
+            4: 3,
+            5: 3,
+        }
+
+        self.current_round = 1
+        self.ducks_killed_in_round = 0
+
         self.gun = Gun()
         self.duck = None
-        self.duck_spawned_once = False
 
-        self.DUCK_SPAWN_DELAY = 5000
+        self.DUCK_SPAWN_DELAY = 2000
         self.last_duck_spawn_time = pygame.time.get_ticks()
 
         self.shots = 0
         self.hits = 0
         self.kills = 0
 
-        self.state = "playing"  
+        self.state = "playing"
 
         self.font_big = pygame.font.SysFont(None, 36)
         self.font_small = pygame.font.SysFont(None, 28)
+
+    def ducks_in_round(self):
+        return self.round_config[self.current_round]
+
+    def next_round(self):
+        if self.current_round >= 5:
+            self.state = "game_over"
+        else:
+            self.current_round += 1
+            self.ducks_killed_in_round = 0
+            self.gun.ammo = self.gun.max_ammo
+            self.last_duck_spawn_time = pygame.time.get_ticks()
 
     def handle_click(self, pos):
         if self.gun.ammo > 0:
@@ -33,6 +55,7 @@ class GameManager:
                 self.duck.dead()
                 self.hits += 1
                 self.kills += 1
+                self.ducks_killed_in_round += 1
                 self.duck = None
                 self.last_duck_spawn_time = pygame.time.get_ticks()
 
@@ -40,16 +63,17 @@ class GameManager:
         current_time = pygame.time.get_ticks()
 
         if self.duck is None:
-            if current_time - self.last_duck_spawn_time >= self.DUCK_SPAWN_DELAY:
+            if self.ducks_killed_in_round >= self.ducks_in_round():
+                self.next_round()
+            elif current_time - self.last_duck_spawn_time >= self.DUCK_SPAWN_DELAY:
                 self.duck = Duck(self.screen_width, self.screen_height)
-                self.duck_spawned_once = True
         else:
             if self.duck.alive:
                 self.duck.update()
 
         self.gun.update()
 
-        if self.gun.ammo == 0 and self.duck_spawned_once:
+        if self.gun.ammo == 0 and not self.gun.bullets:
             self.state = "game_over"
 
     def draw(self, screen):
@@ -58,6 +82,7 @@ class GameManager:
                 self.duck.draw(screen)
             self.gun.draw(screen)
             self.gun.draw_ammo(screen)
+            
 
         elif self.state == "game_over":
             overlay = pygame.Surface((self.screen_width, self.screen_height))
