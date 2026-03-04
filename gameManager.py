@@ -8,6 +8,7 @@ class GameManager:
         self.screen_width = screen_width
         self.screen_height = screen_height
         self.max_rounds = max_rounds
+        self.result = None
 
         self.round_config = {
             1: 1,
@@ -44,6 +45,7 @@ class GameManager:
     def next_round(self):
         if self.current_round >= self.max_rounds:
             self.state = "game_over"
+            self.result = "win"
         else:
             self.current_round += 1
             self.ducks_killed_in_round = 0
@@ -82,6 +84,8 @@ class GameManager:
                 self.game_over_sound.play()
                 self.game_over_sound_played = True
             self.state = "game_over"
+            self.result = "lose"
+
 
     def draw(self, screen):
         if self.state == "playing":
@@ -101,8 +105,15 @@ class GameManager:
             overlay.fill((0, 0, 0))
             screen.blit(overlay, (0, 0))
 
-            title = self.font_big.render("GAME OVER", True, (255, 80, 80))
-            screen.blit(title, (self.screen_width // 2 - title.get_width() // 2, 90))
+            if self.result == "win":
+                result_text = self.font_big.render("YOU WIN", True, (80, 255, 80))
+            else:
+                result_text = self.font_big.render("YOU LOSE", True, (255, 80, 80))
+
+            screen.blit(result_text, (self.screen_width // 2 - result_text.get_width() // 2, 60))
+
+            title = self.font_big.render("GAME OVER", True, (255, 255, 255))
+            screen.blit(title, (self.screen_width // 2 - title.get_width() // 2, 100))
 
             kills_text = self.font_small.render(f"Killed ducks: {self.kills}", True, (255, 255, 255))
             screen.blit(kills_text, (self.screen_width // 2 - kills_text.get_width() // 2, 150))
