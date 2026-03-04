@@ -18,6 +18,7 @@ start_sound = pygame.mixer.Sound("assets/sounds/start_game.wav")
 start_sound.set_volume(0.8)
 
 state = "menu"
+selected_rounds = 1
 gm = None
 
 font_big = pygame.font.SysFont(None, 36)
@@ -27,11 +28,16 @@ button_rect = pygame.Rect(WINDOW_WIDTH // 2 - 50, WINDOW_HEIGHT // 2 + 20, 100, 
 
 
 def main():
-    global state, gm
+    global state, gm , selected_rounds
     running = True
 
     while running:
         for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and state == "menu":
+                if event.unicode.isdigit():
+                    num = int(event.unicode)
+                    if 1 <= num <= 5:
+                        selected_rounds = num
             if event.type == pygame.QUIT:
                 running = False
 
@@ -39,7 +45,7 @@ def main():
                 if state == "menu" and button_rect.collidepoint(event.pos):
                     start_sound.play()
                     state = "game"
-                    gm = GameManager(WINDOW_WIDTH, WINDOW_HEIGHT)
+                    gm = GameManager(WINDOW_WIDTH, WINDOW_HEIGHT,selected_rounds)
 
                 elif state == "game" and gm:
                     gm.handle_click(event.pos)
@@ -53,6 +59,8 @@ def main():
             go_text = font_small.render("GO", True, (0, 0, 0))
             WINDOW.blit(go_text, (button_rect.centerx - go_text.get_width() // 2,
                                    button_rect.centery - go_text.get_height() // 2))
+            round_text = font_small.render(f"Rounds: {selected_rounds} (press 1-5 on keybord)", True, (255, 255, 255))
+            WINDOW.blit(round_text, (WINDOW_WIDTH // 2 - round_text.get_width() // 2, 170))
 
         elif state == "game" and gm:
             gm.update()

@@ -4,9 +4,10 @@ from duck import Duck
 
 
 class GameManager:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height,max_rounds):
         self.screen_width = screen_width
         self.screen_height = screen_height
+        self.max_rounds = max_rounds
 
         self.round_config = {
             1: 1,
@@ -41,7 +42,7 @@ class GameManager:
         return self.round_config[self.current_round]
 
     def next_round(self):
-        if self.current_round >= 5:
+        if self.current_round >= self.max_rounds:
             self.state = "game_over"
         else:
             self.current_round += 1
@@ -89,7 +90,7 @@ class GameManager:
             self.gun.draw(screen)
             self.gun.draw_ammo(screen)
             hud = self.font_small.render(
-                f"Round: {self.current_round}/5  Ducks: {self.ducks_killed_in_round}/{self.ducks_in_round()}",
+                f"Round: {self.current_round}/{self.max_rounds}  Ducks: {self.ducks_killed_in_round}/{self.ducks_in_round()}",
                 True, (255, 255, 255)
             )
             screen.blit(hud, (10, 10))
