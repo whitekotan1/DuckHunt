@@ -2,6 +2,7 @@ import pygame
 import sys
 from design import Design
 from gameManager import GameManager
+import argparse
 
 pygame.init()
 pygame.mixer.init()
@@ -17,8 +18,12 @@ design = Design(WINDOW_WIDTH, WINDOW_HEIGHT)
 start_sound = pygame.mixer.Sound("assets/sounds/start_game.wav")
 start_sound.set_volume(0.8)
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--rounds", type=int, default=1, help="Number of rounds (1-5)")
+args = parser.parse_args()
+
 state = "menu"
-selected_rounds = 1
+selected_rounds = args.rounds
 gm = None
 
 font_big = pygame.font.SysFont(None, 36)
