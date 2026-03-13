@@ -2,6 +2,7 @@ import pygame
 import sys
 from design import Design
 from gameManager import GameManager
+import argparse
 
 pygame.init()
 pygame.mixer.init()
@@ -17,8 +18,12 @@ design = Design(WINDOW_WIDTH, WINDOW_HEIGHT)
 start_sound = pygame.mixer.Sound("assets/sounds/start_game.wav")
 start_sound.set_volume(0.8)
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--rounds", type=int, default=1, help="Number of rounds (1-5)")
+args = parser.parse_args()
+
 state = "menu"
-selected_rounds = 1
+selected_rounds = args.rounds
 gm = None
 
 font_big = pygame.font.SysFont(None, 36)
@@ -43,6 +48,13 @@ def main():
                     num = int(event.unicode)
                     if 1 <= num <= 5:
                         selected_rounds = num
+
+            if event.type == pygame.KEYDOWN and state == "game" and gm and gm.state == "game_over":
+                if event.key == pygame.K_r:
+                    gm = GameManager(WINDOW_WIDTH, WINDOW_HEIGHT, selected_rounds)
+
+                if event.key == pygame.K_x:
+                    running = False
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 if state == "menu" and button_rect.collidepoint(event.pos):
